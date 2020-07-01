@@ -91,6 +91,18 @@ def rewind_song():
         selected_song_label['text'] = "You have chosen: " + song_box.grab_current()
 
 
+def forward_song():
+    index = int(song_box.curselection()[0])
+    if index + 1 > song_box.size() - 1:
+        pass
+    else:
+        selected_song = song_box.curselection()[0]
+        song_box.select_clear(index)
+        song_box.select_set(index + 1)
+        pygame.mixer.music.load(song_list[selected_song])
+        selected_song_label['text'] = "You have chosen: " + song_box.grab_current()
+
+
 root = Tk()
 root.title("Music Player")
 root.config(bg="#13b096")
@@ -119,7 +131,7 @@ play_pause = Button(player_frame, image=play_pause_icon, command=play_pause_song
 
 forward_img = Image.open("player icons/forward.png")
 forward_icon = ImageTk.PhotoImage(forward_img)
-forward = Button(player_frame, image=forward_icon)
+forward = Button(player_frame, image=forward_icon, command=forward_song)
 
 refresh_img = Image.open("player icons/refresh.png")
 refresh_icon = ImageTk.PhotoImage(refresh_img)
