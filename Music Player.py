@@ -1,7 +1,17 @@
+'''
+This is the master branch
+'''
+
+from tkinter import Tk
+from tkinter.ttk import *
 from tkinter import *
 from tkinter import filedialog
 from PIL import Image, ImageTk
 import pygame
+from pygame import *
+from mutagen.mp3 import MP3
+import threading
+from time import sleep
 
 pygame.mixer.init()
 
@@ -58,6 +68,19 @@ def play_pause_song():
     index = int(song_box.curselection()[0])
     selected_song = song_box.get(index)
 
+    def run_progress_bar(length):
+        step = length / 100
+        place = 0
+        while 0 <= (pos:= pygame.mixer.music.get_pos()) <= song_length and place <= 100:
+            if pos % int(step) == 0:
+                sleep(0.0001)  # prevent duplicate data and slow down the process, because it is so fast.
+                print(f"Song is at: {place}%")  # debugging line
+                song_bar['value'] = place
+                root.update_idletasks()
+                place += 1
+        song_bar['value'] = 0
+        place = 0
+
     global play_pause, play_pause_img, play_pause_icon, PAUSED
     if PAUSED:
         play_pause_img = Image.open("player icons/pause.png")
@@ -65,6 +88,11 @@ def play_pause_song():
         play_pause = Button(player_frame, image=play_pause_icon, command=play_pause_song)
         pygame.mixer.music.load(song_list[selected_song])
         pygame.mixer.music.play(0)
+        song = MP3(song_list[selected_song])
+        song_length = song.info.length * 1000
+        print(f"Song length is: {song_length}")  # debugging line
+        song_thread = threading.Thread(target=run_progress_bar, args=(song_length,))
+        song_thread.start()
         PAUSED = False
     else:
         play_pause_img = Image.open("player icons/play.png")
@@ -111,6 +139,9 @@ root.geometry("500x400")
 song_box = Listbox(root, width=50)
 song_box.bind("<<ListboxSelect>>", select_song)
 song_box.pack(pady=30)
+
+song_bar = Progressbar(root, orient=HORIZONTAL, length=400, mode='determinate')
+song_bar.pack(pady=5)
 
 selected_song_label = Label(root, text="You have not selected a song yet!")
 selected_song_label.pack()
