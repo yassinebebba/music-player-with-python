@@ -12,4 +12,8 @@ Requirements --> Libraries:
        ║ Pillow  ║
        ╠═════════╣
        ║ Pygame  ║
+       ╠═════════╣
+       ║ mutagen ║
+       ╠═════════╣
+       ║threading║
        ╚═════════╝
