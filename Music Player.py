@@ -71,7 +71,7 @@ def play_pause_song():
     def run_progress_bar(length):
         step = length / 100
         place = 0
-        while 0 <= (pos:= pygame.mixer.music.get_pos()) <= song_length and place <= 100:
+        while 0 <= (pos := pygame.mixer.music.get_pos()) <= song_length and place <= 100:
             if pos % int(step) == 0:
                 sleep(0.0001)  # prevent duplicate data and slow down the process, because it is so fast.
                 print(f"Song is at: {place}%")  # debugging line
@@ -112,11 +112,11 @@ def rewind_song():
     if index - 1 < 0:
         pass
     else:
-        selected_song = song_box.curselection()[0]
+        selected_song = song_box.get(index - 1)
         song_box.select_clear(index)
         song_box.select_set(index - 1)
         pygame.mixer.music.load(song_list[selected_song])
-        selected_song_label['text'] = "You have chosen: " + song_box.grab_current()
+        selected_song_label['text'] = "You have chosen: " + selected_song
 
 
 def forward_song():
@@ -124,11 +124,11 @@ def forward_song():
     if index + 1 > song_box.size() - 1:
         pass
     else:
-        selected_song = song_box.curselection()[0]
+        selected_song = song_box.get(index + 1)
         song_box.select_clear(index)
         song_box.select_set(index + 1)
         pygame.mixer.music.load(song_list[selected_song])
-        selected_song_label['text'] = "You have chosen: " + song_box.grab_current()
+        selected_song_label['text'] = "You have chosen: " + selected_song
 
 
 root = Tk()
